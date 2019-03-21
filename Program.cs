@@ -50,7 +50,7 @@ namespace DefectInit
         }
 
         /// <summary>
-        /// Populates a given file with the structure relvant to Defect investivation (employer specific). 
+        /// Populates a given file with the structure relevant to Defect investivation. 
         /// </summary>
         /// <param name="theFile">The file to populate </param>
         /// <param name="fileTitle">Desired title of the file</param>
