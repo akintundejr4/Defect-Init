@@ -25,8 +25,20 @@ namespace DefectInit
             else
             {
                 if (args.Length > 2) ShowUsage();
-                if (args.Length == 1) defectTitle = args[0];
                 if (args.Length == 2) defectTitle = args[0] + " " + args[1];
+
+                if (args.Length == 1)
+                {
+                    if(Path.GetExtension(args[0]) == ".xlsx")
+                    {
+                        // Do stuff here that accounts for passing in an ALM excel spreadsheet, parsing it, and pre populating
+                        // the output file with the data. 
+                    }
+                    else
+                    {
+                        defectTitle = args[0];
+                    }
+                } 
             }
 
             if (!String.IsNullOrEmpty(defectTitle))
@@ -34,14 +46,14 @@ namespace DefectInit
                 string defectFolder = CurrentPath + Path.DirectorySeparatorChar + defectTitle;
                 Directory.CreateDirectory(defectFolder);
 
-                string defectInfoFile = defectFolder + Path.DirectorySeparatorChar + defectTitle.Replace(" ", String.Empty) + ".md"; 
+                string defectInfoFile = defectFolder + Path.DirectorySeparatorChar + defectTitle.Replace(" ", String.Empty) + ".md";
 
                 if (!File.Exists(defectInfoFile))
                 {
                     File.Create(defectInfoFile).Dispose();
                 }
 
-                PopulateFile(defectInfoFile, defectTitle);
+                PopulateBareFile(defectInfoFile, defectTitle);
             }
             else
             {
@@ -54,7 +66,7 @@ namespace DefectInit
         /// </summary>
         /// <param name="theFile">The file to populate </param>
         /// <param name="fileTitle">Desired title of the file</param>
-        private static void PopulateFile(string theFile, string fileTitle)
+        private static void PopulateBareFile(string theFile, string fileTitle)
         {
             if (new FileInfo(theFile).Length == 0)
             {
