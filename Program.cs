@@ -56,9 +56,9 @@ namespace DefectInit
         private static string CreateDefectFile(string defectTitle)
         {
             string defectFolder = CurrentPath + Path.DirectorySeparatorChar + defectTitle;
-            Directory.CreateDirectory(defectFolder);
-
             string defectMarkdownFile = defectFolder + Path.DirectorySeparatorChar + defectTitle.Replace(" ", String.Empty) + ".md";
+
+            Directory.CreateDirectory(defectFolder);
 
             if (!File.Exists(defectMarkdownFile))
             {
