@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Microsoft.Office.Interop.Excel;
+
 
 /// <summary>
 /// A simple program to create a folder and certain markdown file format relevant to beginning work on a 
@@ -24,41 +27,45 @@ namespace DefectInit
             }
             else
             {
-                if (args.Length > 2) ShowUsage();
-                if (args.Length == 2) defectTitle = args[0] + " " + args[1];
-
                 if (args.Length == 1)
                 {
-                    if(Path.GetExtension(args[0]) == ".xlsx")
+                    if (Path.GetExtension(args[0]) == ".xlsx")
                     {
-                        // Do stuff here that accounts for passing in an ALM excel spreadsheet, parsing it, and pre populating
-                        // the output file with the data. 
+                        Dictionary<string, string> excelFieldsDict = ParseExcelInputFile(args[0]);
+                        string defectFile = CreateDefectFile(excelFieldsDict["DefectTitle"]); 
+
+                        PopulateExcelBasedFile(defectFile, excelFieldsDict); 
                     }
                     else
                     {
                         defectTitle = args[0];
                     }
-                } 
+                }
+
+                if (args.Length == 2) defectTitle = args[0] + " " + args[1];
+                if (args.Length > 2) ShowUsage();
             }
 
             if (!String.IsNullOrEmpty(defectTitle))
             {
-                string defectFolder = CurrentPath + Path.DirectorySeparatorChar + defectTitle;
-                Directory.CreateDirectory(defectFolder);
-
-                string defectInfoFile = defectFolder + Path.DirectorySeparatorChar + defectTitle.Replace(" ", String.Empty) + ".md";
-
-                if (!File.Exists(defectInfoFile))
-                {
-                    File.Create(defectInfoFile).Dispose();
-                }
-
-                PopulateBareFile(defectInfoFile, defectTitle);
+                string defectFile = CreateDefectFile(defectTitle); 
+                PopulateBareFile(defectFile, defectTitle);
             }
-            else
+        }
+
+        private static string CreateDefectFile(string defectTitle)
+        {
+            string defectFolder = CurrentPath + Path.DirectorySeparatorChar + defectTitle;
+            Directory.CreateDirectory(defectFolder);
+
+            string defectMarkdownFile = defectFolder + Path.DirectorySeparatorChar + defectTitle.Replace(" ", String.Empty) + ".md";
+
+            if (!File.Exists(defectMarkdownFile))
             {
-                ShowUsage();
+                File.Create(defectMarkdownFile).Dispose();
             }
+
+            return defectMarkdownFile; 
         }
 
         /// <summary>
@@ -84,6 +91,75 @@ namespace DefectInit
                 }
             }
         }
+
+        private static void PopulateExcelBasedFile(string defectFile, Dictionary<string, string> excelFieldsDict)
+        {
+            if (new FileInfo(defectFile).Length == 0)
+            {
+                using (var sw = new StreamWriter(defectFile, true))
+                {
+                    sw.WriteLine("# " + excelFieldsDict["DefectTitle"]);
+                    sw.WriteLine();
+                    sw.WriteLine("## Summary");
+                    sw.WriteLine(excelFieldsDict["Summary"]); 
+                    sw.WriteLine();
+                    sw.WriteLine("## Details");
+                    sw.WriteLine("* Detected In: " + excelFieldsDict["DetectedInRelease"]);
+                    sw.WriteLine("* Creation Date: " + excelFieldsDict["CreationDate"]); 
+                    sw.WriteLine("* Environment: " + excelFieldsDict["Environment"]); 
+                    sw.WriteLine();
+                    sw.WriteLine("## Description");
+                    sw.WriteLine(excelFieldsDict["Description"]);
+                    sw.WriteLine(); 
+                    sw.WriteLine("## Reproduction Steps");
+                    sw.WriteLine();
+                    sw.WriteLine("## Comments");
+                    sw.WriteLine(excelFieldsDict["Comments"]); 
+                }
+            }
+        }
+
+        private static Dictionary<string, string> ParseExcelInputFile(string excelFile)
+        {
+            Application excelApp = new Application();
+            Workbook workBook = excelApp.Workbooks.Open(excelFile);
+            Worksheet workSheet = workBook.Sheets[1];
+            Range range = workSheet.UsedRange;
+
+            Console.Write(range.Cells[1,1]); 
+            Dictionary<string, string> excelFieldsDict = new Dictionary<string, string>();
+
+            for (int i = 1; i <= range.Columns.Count; i++)
+            {
+                switch (range.Cells[1, i])
+                {
+                    case "Item ID":
+                        excelFieldsDict.Add("DefectTitle", "Defect " + range.Cells[2, i]); 
+                        break;
+                    case "Description":
+                        excelFieldsDict.Add("Description", range.Cells[2, i]);
+                        break;
+                    case "Comments (Click Add Comment before commenting)":
+                        excelFieldsDict.Add("Comments", range.Cells[2, i]);
+                        break;
+                    case "Summary":
+                        excelFieldsDict.Add("Summary", range.Cells[2, i]);
+                        break;
+                    case "Creation Date":
+                        excelFieldsDict.Add("CreationDate", range.Cells[2, i]);
+                        break;
+                    case "Detected in Release":
+                        excelFieldsDict.Add("DetectedInRelease", range.Cells[2, i]);
+                        break;
+                    case "Environment":
+                        excelFieldsDict.Add("Environment", range.Cells[2, i]);
+                        break; 
+                }
+            }
+
+            return excelFieldsDict; 
+        }
+
 
         /// <summary>
         /// Shows the proper usage of the exectuable and exits, encouraging a retry. 
