@@ -8,10 +8,10 @@ using System.Reflection;
 /// <summary>
 /// A simple program to create a folder and certain markdown file format relevant to beginning work on a 
 /// software defect. The file format is specific to employer mandates enforced at time of creation. Functionality
-/// has been added that allows for an excel spreadsheet to be passed in that pre populates the output file with relevant
+/// has been added that allows for an excel spreadsheet to be passed in that pre-populates the output file with relevant
 /// work data.
 /// 
-/// A Segun Soliloquy: Captain America was in the wrong during Captain America: Civil War. What Iron Man was proposing made sense, 
+/// Segun Soliloquy #2: Captain America was in the wrong during Captain America: Civil War. What Iron Man was proposing made sense, 
 /// Cap should have opted for modifying the Sokovia Accords instead of becoming an international fugitive. I just rewatched it, 
 /// Team Iron Man all the way. 
 /// </summary>
@@ -32,27 +32,23 @@ namespace DefectInit
                 Console.Write("Enter Defect Title: ");
                 defectTitle = Console.ReadLine();
             }
-            else
+            else if (args.Length == 1 && Path.GetExtension(args[0]) == ".xlsx")
             {
-                if (args.Length == 1)
-                {
-                    if (Path.GetExtension(args[0]) == ".xlsx")
-                    {
-                        Dictionary<string, string> excelFieldsDict = ProcessExcelInputFile(args[0]);
-                        defectFile = CreateDefectFile(excelFieldsDict["DefectTitle"]);
-                        PopulateExcelBasedFile(defectFile, excelFieldsDict);
-                    }
-                    else
-                    {
-                        // User passed something like "Defect8932", with no space. 
-                        defectTitle = args[0];
-                    }
-                }
-
-                // User passed something like "Defect 8329", with a space. 
-                if (args.Length == 2) defectTitle = args[0] + " " + args[1];
-                // No reason for more than 2 arguments to be passed. 
-                if (args.Length > 2) ShowUsage();
+                Dictionary<string, string> excelFieldsDict = ProcessExcelInputFile(args[0]);
+                defectFile = CreateDefectFile(excelFieldsDict["DefectTitle"]);
+                PopulateExcelBasedFile(defectFile, excelFieldsDict);
+            }
+            else if (args.Length == 1)
+            {
+                defectTitle = args[0];
+            }
+            else if (args.Length == 2)
+            {
+                defectTitle = args[0] + " " + args[1];
+            }
+            else if (args.Length > 2)
+            {
+                ShowUsage();
             }
 
             if (!String.IsNullOrEmpty(defectTitle))
@@ -72,14 +68,28 @@ namespace DefectInit
             string defectFolder = CurrentPath + Path.DirectorySeparatorChar + defectTitle;
             string defectMarkdownFile = defectFolder + Path.DirectorySeparatorChar + defectTitle.Replace(" ", String.Empty) + ".md";
 
-            Directory.CreateDirectory(defectFolder);
-
-            if (!File.Exists(defectMarkdownFile))
+            if (!Directory.Exists(defectFolder) && !File.Exists(defectMarkdownFile))
             {
+                Directory.CreateDirectory(defectFolder);
                 File.Create(defectMarkdownFile).Dispose();
+            }
+            else
+            {
+                HandleError("A folder and/or file for your desired work item already exists in this directory");
             }
 
             return defectMarkdownFile;
+        }
+
+        /// <summary>
+        /// Handle errors by writing an error message to the console and aborting the program. 
+        /// </summary>
+        /// <param name="message">The mesage to write to the console </param>
+        private static void HandleError(string message)
+        {
+            Console.Error.Write(message);
+            Console.ReadKey();
+            Environment.Exit(1);
         }
 
         /// <summary>
@@ -103,14 +113,14 @@ namespace DefectInit
                     sw.WriteLine();
                     sw.WriteLine("## Comments");
                     sw.WriteLine();
-                    sw.WriteLine("## Screenshots"); 
+                    sw.WriteLine("## Screenshots");
                 }
             }
         }
 
         /// <summary>
-        /// Populates a file with the markdown structure relevant to defect investigation, with the values provided 
-        /// from an inputted excel spreadsheet. 
+        /// Populates a file with the markdown structure relevant to defect investigation, with sections filled with 
+        /// values provided from an inputted excel spreadsheet. 
         /// </summary>
         /// <param name="defectFile">The markdown file for the defect.</param>
         /// <param name="excelFieldsDict">A dictionary containing the values pulled from the excel spreadsheet.</param>
@@ -134,12 +144,12 @@ namespace DefectInit
                     sw.WriteLine(excelFieldsDict["Description"]);
                     sw.WriteLine();
                     sw.WriteLine("## Reproduction Steps");
-                    sw.WriteLine("**TODO**: Pull Reproduction Steps from the Description section"); 
+                    sw.WriteLine("**TODO**: Pull Reproduction Steps from the Description section");
                     sw.WriteLine();
                     sw.WriteLine("## Comments");
                     sw.WriteLine(excelFieldsDict["Comments"]);
                     sw.WriteLine();
-                    sw.WriteLine("## Screenshots"); 
+                    sw.WriteLine("## Screenshots");
                 }
             }
         }
