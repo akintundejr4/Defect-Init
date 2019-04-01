@@ -34,7 +34,7 @@ namespace DefectInit
             }
             else if (args.Length == 1 && Path.GetExtension(args[0]) == ".xlsx")
             {
-                Dictionary<string, string> excelFieldsDict = ProcessExcelInputFile(args[0]);
+                Dictionary<string, string> excelFieldsDict = ReadExcelInputFile(args[0]);
                 defectFile = CreateDefectFile(excelFieldsDict["DefectTitle"]);
                 PopulateExcelBasedFile(defectFile, excelFieldsDict);
             }
@@ -155,11 +155,11 @@ namespace DefectInit
         }
 
         /// <summary>
-        /// Processes defect information provided via an inputted excel spreasheet. Returns the values in a dictionary. 
+        /// Reads defect information provided via an inputted excel spreasheet. Returns the values in a dictionary. 
         /// </summary>
-        /// <param name="excelFile">The excel file to process </param>
-        /// <returns>A dictionary with the processed data fields </returns>
-        private static Dictionary<string, string> ProcessExcelInputFile(string excelFile)
+        /// <param name="excelFile">The excel file to read </param>
+        /// <returns>A dictionary with the read data fields </returns>
+        private static Dictionary<string, string> ReadExcelInputFile(string excelFile)
         {
             Dictionary<string, string> excelFieldsDict = new Dictionary<string, string>();
 
@@ -183,6 +183,8 @@ namespace DefectInit
                                 excelFieldsDict.Add("Description", columnValue);
                                 break;
                             case "Comments (Click Add Comment before commenting)":
+                                columnValue = columnValue.Replace("<", "`")
+                                                         .Replace(">", "`");
                                 excelFieldsDict.Add("Comments", columnValue);
                                 break;
                             case "Summary":
