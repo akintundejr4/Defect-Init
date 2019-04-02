@@ -30,7 +30,8 @@ namespace DefectInit
             if (args.Length == 0)
             {
                 Console.Write("Enter Defect Title: ");
-                defectTitle = Console.ReadLine();
+                string temp = Console.ReadLine(); 
+                defectTitle = temp.Contains("Defect") ? temp : "Defect " + temp;
             }
             else if (args.Length == 1 && Path.GetExtension(args[0]) == ".xlsx")
             {
@@ -40,7 +41,7 @@ namespace DefectInit
             }
             else if (args.Length == 1)
             {
-                defectTitle = args[0];
+                defectTitle = args[0].Contains("Defect") ? args[0] : "Defect " + args[0]; 
             }
             else if (args.Length == 2)
             {
