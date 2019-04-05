@@ -76,7 +76,7 @@ namespace DefectInit
             }
             else
             {
-                HandleError("A folder and/or file for your desired work item already exists in this directory");
+                FatalError("A folder and/or file for your desired work item already exists in this directory");
             }
 
             return defectMarkdownFile;
@@ -86,7 +86,7 @@ namespace DefectInit
         /// Handle errors by writing an error message to the console and aborting the program. 
         /// </summary>
         /// <param name="message">The mesage to write to the console </param>
-        private static void HandleError(string message)
+        private static void FatalError(string message)
         {
             Console.Error.Write(message);
             Console.ReadKey();
