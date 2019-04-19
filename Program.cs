@@ -156,7 +156,7 @@ namespace DefectInit
         }
 
         /// <summary>
-        /// Reads defect information provided via an inputted excel spreasheet. Returns the values in a dictionary. 
+        /// Reads defect information provided via an excel spreasheet. Returns the values in a dictionary. 
         /// </summary>
         /// <param name="excelFile">The excel file to read </param>
         /// <returns>A dictionary with the read data fields </returns>
