@@ -114,6 +114,8 @@ namespace DefectInit
                     sw.WriteLine();
                     sw.WriteLine("## Comments");
                     sw.WriteLine();
+                    sw.WriteLine("## Developer Analysis");
+                    sw.WriteLine();
                     sw.WriteLine("## Screenshots");
                 }
             }
@@ -150,6 +152,8 @@ namespace DefectInit
                     sw.WriteLine("## Comments");
                     sw.WriteLine(excelFieldsDict["Comments"]);
                     sw.WriteLine();
+                    sw.WriteLine("## Developer Analysis");
+                    sw.WriteLine(); 
                     sw.WriteLine("## Screenshots");
                 }
             }
@@ -181,12 +185,10 @@ namespace DefectInit
                                 excelFieldsDict.Add("DefectTitle", "Defect " + columnValue);
                                 break;
                             case "Description":
-                                excelFieldsDict.Add("Description", columnValue);
+                                excelFieldsDict.Add("Description", FilterBrackets(columnValue));
                                 break;
                             case "Comments (Click Add Comment before commenting)":
-                                columnValue = columnValue.Replace("<", "`")
-                                                         .Replace(">", "`");
-                                excelFieldsDict.Add("Comments", columnValue);
+                                excelFieldsDict.Add("Comments", FilterBrackets(columnValue));
                                 break;
                             case "Summary":
                                 excelFieldsDict.Add("Summary", columnValue);
@@ -206,6 +208,16 @@ namespace DefectInit
             }
 
             return excelFieldsDict;
+        }
+
+        /// <summary>
+        /// Replaces angle brackets with back ticks for markdown compatability.  
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        private static string FilterBrackets(string inputString)
+        {
+            return inputString.Replace("<", "`").Replace(">", "`"); 
         }
 
         /// <summary>
