@@ -30,7 +30,7 @@ namespace DefectInit
             if (args.Length == 0)
             {
                 Console.Write("Enter Defect Title: ");
-                string temp = Console.ReadLine(); 
+                string temp = Console.ReadLine();
                 defectTitle = temp.Contains("Defect") ? temp : "Defect " + temp;
             }
             else if (args.Length == 1 && Path.GetExtension(args[0]) == ".xlsx")
@@ -41,7 +41,7 @@ namespace DefectInit
             }
             else if (args.Length == 1)
             {
-                defectTitle = args[0].Contains("Defect") ? args[0] : "Defect " + args[0]; 
+                defectTitle = args[0].Contains("Defect") ? args[0] : "Defect " + args[0];
             }
             else if (args.Length == 2)
             {
@@ -141,10 +141,18 @@ namespace DefectInit
                     sw.WriteLine("## Details");
                     sw.WriteLine("* Detected In: " + excelFieldsDict["DetectedInRelease"]);
                     sw.WriteLine("* Creation Date: " + excelFieldsDict["CreationDate"]);
+                    sw.WriteLine("* Creator Full Name: " + excelFieldsDict["CreatorFullName"]);
                     sw.WriteLine("* Environment: " + excelFieldsDict["Environment"]);
+                    sw.WriteLine("* Customer Desired Release: " + excelFieldsDict["CustomerDesiredRelease"]);
                     sw.WriteLine();
                     sw.WriteLine("## Description");
-                    sw.WriteLine(excelFieldsDict["Description"]);
+
+                    string[] descriptionLines = excelFieldsDict["Description"].Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                    for(int i = 0; i < descriptionLines.Length; i++)
+                    {
+                        sw.WriteLine("* " + descriptionLines[i]); 
+                    }
+
                     sw.WriteLine();
                     sw.WriteLine("## Reproduction Steps");
                     sw.WriteLine("**TODO**: Pull Reproduction Steps from the Description section");
@@ -153,7 +161,7 @@ namespace DefectInit
                     sw.WriteLine(excelFieldsDict["Comments"]);
                     sw.WriteLine();
                     sw.WriteLine("## Developer Analysis");
-                    sw.WriteLine(); 
+                    sw.WriteLine();
                     sw.WriteLine("## Screenshots");
                 }
             }
@@ -190,6 +198,12 @@ namespace DefectInit
                             case "Comments (Click Add Comment before commenting)":
                                 excelFieldsDict.Add("Comments", FilterBrackets(columnValue));
                                 break;
+                            case "Customer Desired Release":
+                                excelFieldsDict.Add("CustomerDesiredRelease", columnValue);
+                                break;
+                            case "Creator Full Name":
+                                excelFieldsDict.Add("CreatorFullName", columnValue);
+                                break;
                             case "Summary":
                                 excelFieldsDict.Add("Summary", columnValue);
                                 break;
@@ -217,7 +231,7 @@ namespace DefectInit
         /// <returns></returns>
         private static string FilterBrackets(string inputString)
         {
-            return inputString.Replace("<", "`").Replace(">", "`"); 
+            return inputString.Replace("<", "`").Replace(">", "`");
         }
 
         /// <summary>

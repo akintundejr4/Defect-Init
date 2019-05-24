@@ -3,4 +3,4 @@
 /bin
 /.vs
 /Properties
-.csproj.user
+*.csproj.user
