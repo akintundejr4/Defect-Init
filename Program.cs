@@ -27,27 +27,29 @@ namespace DefectInit
             string defectTitle = null;
             string defectFile = null;
 
-            if (args.Length == 0)
+            switch (args.Length)
             {
-                Console.Write("Enter Defect Title: ");
-                string temp = Console.ReadLine();
-                defectTitle = temp.Contains("Defect") ? temp : "Defect " + temp;
+                case 0:
+                    Console.Write("Enter Defect Title: ");
+                    string temp = Console.ReadLine();
+                    defectTitle = temp.Contains("Defect") ? temp : "Defect " + temp;
+                    break;
+                case 1:
+                    if (Path.GetExtension(args[0]) == ".xlsx")
+                    {
+                        Dictionary<string, string> excelFieldsDict = ReadExcelInputFile(args[0]);
+                        defectFile = CreateDefectFile(excelFieldsDict["DefectTitle"]);
+                        PopulateExcelBasedFile(defectFile, excelFieldsDict);
+                        break;
+                    }
+                    defectTitle = args[0].Contains("Defect") ? args[0] : "Defect " + args[0];
+                    break;
+                case 2:
+                    defectTitle = args[0] + " " + args[1];
+                    break;
             }
-            else if (args.Length == 1 && Path.GetExtension(args[0]) == ".xlsx")
-            {
-                Dictionary<string, string> excelFieldsDict = ReadExcelInputFile(args[0]);
-                defectFile = CreateDefectFile(excelFieldsDict["DefectTitle"]);
-                PopulateExcelBasedFile(defectFile, excelFieldsDict);
-            }
-            else if (args.Length == 1)
-            {
-                defectTitle = args[0].Contains("Defect") ? args[0] : "Defect " + args[0];
-            }
-            else if (args.Length == 2)
-            {
-                defectTitle = args[0] + " " + args[1];
-            }
-            else if (args.Length > 2)
+
+            if (args.Length > 2)
             {
                 ShowUsage();
             }
@@ -148,9 +150,9 @@ namespace DefectInit
                     sw.WriteLine("## Description");
 
                     string[] descriptionLines = excelFieldsDict["Description"].Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-                    for(int i = 0; i < descriptionLines.Length; i++)
+                    for (int i = 0; i < descriptionLines.Length; i++)
                     {
-                        sw.WriteLine("* " + descriptionLines[i]); 
+                        sw.WriteLine("* " + descriptionLines[i]);
                     }
 
                     sw.WriteLine();
