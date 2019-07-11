@@ -1,9 +1,5 @@
 # Defect-Init
-A C# console application for creating the folder and applicable informational markdown file for starting work on a software defect, specific to my position at time of creation. 
+An application for creating the items neccesary for "intializing" or starting up work on a software defect, as defined by my position at time of creation. It makes a folder with the defect's name, and then an informational markdown file pre populated with data from Excel (if chosen) that has information relevant to working the defect.
 
 ## How It Was Made 
-The tool was created as a C# console application. 
-
-## Why It Was Made 
-So I wouldn't have to manually create  a new folder and file with the proper document structure every time I was assigned a defect to work on.
-
+Created as a C# console application. 
