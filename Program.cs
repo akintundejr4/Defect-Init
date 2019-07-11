@@ -10,10 +10,6 @@ using System.Reflection;
 /// software defect. The file format is specific to employer mandates enforced at time of creation. Functionality
 /// has been added that allows for an excel spreadsheet to be passed in that pre-populates the output file with relevant
 /// work data.
-/// 
-/// Segun Soliloquy #2: Captain America was in the wrong during Captain America: Civil War. What Iron Man was proposing made sense, 
-/// Cap should have opted for modifying the Sokovia Accords instead of becoming an international fugitive. I just rewatched it, 
-/// Team Iron Man all the way. 
 /// </summary>
 
 namespace DefectInit
