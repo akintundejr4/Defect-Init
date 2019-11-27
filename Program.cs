@@ -20,15 +20,17 @@ namespace DefectInit
 
         private static void Main(string[] args)
         {
-            string defectTitle = null;
-            string defectFile = null;
+            string defectTitle = "";
+            string defectFile = "";
+
+            if (args.Length > 2) FatalError("Invalid arugment length");
 
             switch (args.Length)
             {
                 case 0:
                     Console.Write("Enter Defect Title: ");
-                    string temp = Console.ReadLine();
-                    defectTitle = temp.Contains("Defect") ? temp : "Defect " + temp;
+                    string input = Console.ReadLine();
+                    defectTitle = input.Contains("Defect") ? input : "Defect " + input;
                     break;
                 case 1:
                     if (Path.GetExtension(args[0]) == ".xlsx")
@@ -45,16 +47,10 @@ namespace DefectInit
                     break;
             }
 
-            if (args.Length > 2)
-            {
-                ShowUsage();
-            }
+            if (String.IsNullOrEmpty(defectTitle)) FatalError("Could not parse provided Defect Title.");
 
-            if (!String.IsNullOrEmpty(defectTitle))
-            {
-                defectFile = CreateDefectFile(defectTitle);
-                PopulateBareFile(defectFile, defectTitle);
-            }
+            defectFile = CreateDefectFile(defectTitle);
+            PopulateBareFile(defectFile, defectTitle);
         }
 
         /// <summary>
@@ -87,6 +83,7 @@ namespace DefectInit
         private static void FatalError(string message)
         {
             Console.Error.Write(message);
+            ShowUsage(); 
             Console.ReadKey();
             Environment.Exit(1);
         }
@@ -237,6 +234,7 @@ namespace DefectInit
         /// </summary>
         private static void ShowUsage()
         {
+            Console.WriteLine("Application Usage:\n");
             Console.WriteLine("This program must be provided at least one argument. It may also take two.");
             Console.WriteLine();
             Console.WriteLine("Example: Defect7134 would be a single argument, because of the lack of a space.");

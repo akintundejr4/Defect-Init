@@ -58,7 +58,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>cd $(OutDir)
-for /R %25%25f in (*) do (if not "%25%25~xf"==".exe" del "%25%25~f")</PostBuildEvent>
+    <PostBuildEvent>if $(ConfigurationName) == Release (
+cd $(OutDir)
+for /R %25%25f in (*) do (if not "%25%25~xf"==".exe" del "%25%25~f")
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>
