@@ -38,19 +38,22 @@ namespace DefectInit
                         Dictionary<string, string> excelFieldsDict = ReadExcelInputFile(args[0]);
                         defectFile = CreateDefectFile(excelFieldsDict["DefectTitle"]);
                         PopulateExcelBasedFile(defectFile, excelFieldsDict);
-                        break;
                     }
-                    defectTitle = args[0].Contains("Defect") ? args[0] : "Defect " + args[0];
+                    else
+                    {
+                        defectTitle = args[0].Contains("Defect") ? args[0] : "Defect " + args[0];
+                    }
                     break;
                 case 2:
                     defectTitle = args[0] + " " + args[1];
                     break;
             }
 
-            if (String.IsNullOrEmpty(defectTitle)) FatalError("Could not parse provided Defect Title.");
-
-            defectFile = CreateDefectFile(defectTitle);
-            PopulateBareFile(defectFile, defectTitle);
+            if (!String.IsNullOrEmpty(defectTitle))
+            {
+                defectFile = CreateDefectFile(defectTitle);
+                PopulateBareFile(defectFile, defectTitle);
+            }
         }
 
         /// <summary>

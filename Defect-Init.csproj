@@ -26,7 +26,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\RSS-Local\Defects\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -59,8 +59,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
-cd $(OutDir)
-for /R %25%25f in (*) do (if not "%25%25~xf"==".exe" del "%25%25~f")
+xcopy "$(ProjectDir)bin\Release\Defect-Init.exe" "C:\RSS-Local\Defects" /q /y
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>
