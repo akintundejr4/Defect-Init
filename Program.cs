@@ -1,15 +1,13 @@
-﻿using ExcelDataReader;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.IO; 
 using System.Data;
-using System.IO;
+using ExcelDataReader;
 using System.Reflection;
+using System.Collections.Generic;
 
 /// <summary>
-/// A simple program to create a folder and certain markdown file format relevant to beginning work on a 
-/// software defect. The file format is specific to employer mandates enforced at time of creation. Functionality
-/// has been added that allows for an excel spreadsheet to be passed in that pre-populates the output file with relevant
-/// work data.
+/// A simple program to create a folder and certain file format relevant to  work on a software defect. Functionality has been 
+/// added that allows for an excel spreadsheet to be passed in that pre-populates the output file with relevant  work data.
 /// </summary>
 
 namespace DefectInit
@@ -73,7 +71,7 @@ namespace DefectInit
             }
             else
             {
-                FatalError("A folder and/or file for your desired work item already exists in this directory");
+                FatalError("A folder and/or file for your desired work item already exists in this directory.");
             }
 
             return defectMarkdownFile;
