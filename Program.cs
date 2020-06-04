@@ -21,7 +21,7 @@ namespace DefectInit
             string defectTitle = "";
             string defectFile = "";
 
-            if (args.Length > 2) FatalError("Invalid arugment length");
+            if (args.Length > 2) FatalError("Invalid argument length");
 
             switch (args.Length)
             {
