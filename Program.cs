@@ -64,15 +64,10 @@ namespace DefectInit
             string defectFolder = CurrentPath + Path.DirectorySeparatorChar + defectTitle;
             string defectMarkdownFile = defectFolder + Path.DirectorySeparatorChar + defectTitle.Replace(" ", String.Empty) + ".md";
 
-            if (!Directory.Exists(defectFolder) && !File.Exists(defectMarkdownFile))
-            {
-                Directory.CreateDirectory(defectFolder);
-                File.Create(defectMarkdownFile).Dispose();
-            }
-            else
-            {
-                FatalError("A folder and/or file for your desired work item already exists in this directory.");
-            }
+            if (File.Exists(defectMarkdownFile)) FatalError("A file for this Defect already exists."); 
+
+            Directory.CreateDirectory(defectFolder);
+            File.Create(defectMarkdownFile).Dispose();
 
             return defectMarkdownFile;
         }
@@ -235,7 +230,7 @@ namespace DefectInit
         /// </summary>
         private static void ShowUsage()
         {
-            Console.WriteLine("Application Usage:\n");
+            Console.WriteLine("\nApplication Usage:\n");
             Console.WriteLine("This program must be provided at least one argument. It may also take two.");
             Console.WriteLine();
             Console.WriteLine("Example: Defect7134 would be a single argument, because of the lack of a space.");
